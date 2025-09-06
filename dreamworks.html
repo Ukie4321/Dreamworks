@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Modern Video Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://content.jwplatform.com/libraries/IDzF9Zmk.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #0e0e0e;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 10px;
+    }
+
+    .channel-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      padding-bottom: 15px;
+    }
+
+    .channel-buttons button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .channel-buttons button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3);
+    }
+
+    .channel-buttons .selected {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+    }
+
+    .video-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .video-box {
+      width: 100%;
+      max-width: 980px;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+      background: #000;
+    }
+
+    #jwplayer-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (max-width: 600px) {
+      .channel-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .channel-buttons button {
+        width: 90%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="channel-buttons">
+      <button class="selected video-btn"
+        data-url="https://atemecdnbalancer-voe.sysln.id/live/eds/DreamWorksHD/mpd/DreamWorksHD.mpd"
+        data-key="f08c30b7ee114399b72e77b0c099244b:a33d496875d04510a9b3116ba51ae65d">
+        MRZYBtv
+      </button>
+      <!-- Tambahkan channel lain di sini -->
+    </div>
+    <div class="video-wrapper">
+      <div class="video-box">
+        <div id="jwplayer-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function initializePlayer(videoUrl, videoKey) {
+      jwplayer("jwplayer-container").remove();
+      const container = $('<div id="jwplayer-container"></div>');
+      $(".video-box").append(container);
+
+      const player = jwplayer("jwplayer-container").setup({
+        file: videoUrl,
+        controls: true,
+        autostart: true,
+        mute: false,
+        stretching: "exactfit",
+        drm: {
+          clearkey: {
+            keyId: videoKey.split(":")[0],
+            key: videoKey.split(":")[1]
+          }
+        }
+      });
+
+      setTimeout(() => {
+        player.play().catch(e => {
+          console.warn("Autoplay gagal:", e);
+        });
+      }, 500);
+    }
+
+    $(document).ready(function () {
+      const first = $(".video-btn.selected");
+      initializePlayer(first.data("url"), first.data("key"));
+
+      $(".video-btn").on("click", function () {
+        $(".video-btn").removeClass("selected");
+        $(this).addClass("selected");
+
+        const videoUrl = $(this).data("url");
+        const videoKey = $(this).data("key");
+        initializePlayer(videoUrl, videoKey);
+      });
+    });
+  </script>
+</body>
+</html>
