@@ -30,9 +30,9 @@ body {
   background-size:cover;
   background-position:center;
   z-index:-1;
-  opacity:0.4;
-  background-image:linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,1)),
-    url('https://i.pinimg.com/originals/e2/ae/e7/e2aee721f01bbfc7de534c56efd4da9e.gif');
+  opacity:1; /* tampilkan gif full */
+  background-image:linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6)),
+    url('https://i.pinimg.com/originals/53/87/94/538794ea553c0b8b0190e258049aaf9e.gif');
 }
 #poster {
   width: 100%;
@@ -48,7 +48,7 @@ body {
   font-size: 12px;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(135deg, #00c853, #64dd17); /* default hijau untuk genre tidak terdaftar */
+  background: linear-gradient(135deg, #00c853, #64dd17); /* default hijau */
 }
 /* Warna-warni genre */
 .chip[data-genre="Action"] {
@@ -59,6 +59,9 @@ body {
 }
 .chip[data-genre="Romance"] {
   background: linear-gradient(135deg, #f50057, #ff4081);
+}
+.chip[data-genre="Animasi"] {
+  background: linear-gradient(135deg, #E8700E, #ff4081);
 }
 .chip[data-genre="Fantasy"] {
   background: linear-gradient(135deg, #aa00ff, #d500f9);
@@ -71,8 +74,11 @@ body {
   color: #000;
   font-weight: 700;
 }
-#rating .star {
-  color: #fff;
+#rating .material-icons {
+  color: #2196f3; /* bintang biru */
+  font-size: 18px;
+  vertical-align: middle;
+  margin-right: 4px;
 }
 h6 {
   font-size: 16px;
@@ -170,7 +176,7 @@ button:hover {
     <h5 class="white-text mrzyb" id="title" style="margin-top:10px;">CHALKZONE</h5>
     <div class="movie-meta" style="margin-bottom:8px;">
       <div id="genre"></div>
-      <div class="chip" id="rating"><span class="star">⭐</span> 10</div>
+      <div class="chip" id="rating"><i class="material-icons star">star</i> 10</div>
     </div>
     <h6>DAFTAR EPISODE</h6>
     <div class="episode-scroll-wrapper">
@@ -236,7 +242,7 @@ function loadSeries(data){
     });
   }
 
-  if(data.rating) document.getElementById("rating").innerHTML = '<span class="star">⭐</span> '+data.rating;
+  if(data.rating) document.getElementById("rating").innerHTML = '<i class="material-icons star">star</i> '+data.rating;
 
   const epContainer=document.getElementById("episode-list");
   epContainer.innerHTML="";
