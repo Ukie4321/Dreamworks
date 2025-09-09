@@ -1,69 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>DreamWorks Player (via Proxy UA ExoPlayer)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://content.jwplatform.com/libraries/IDzF9Zmk.js"></script>
-  <style>
-    body { margin:0; padding:0; background:#0e0e0e; color:#fff; font-family:Inter,sans-serif; }
-    .container { display:flex; flex-direction:column; height:100vh; padding:10px; }
-    .channel-buttons { text-align:center; margin-bottom:15px; }
-    .channel-buttons button { padding:10px 16px; border:none; border-radius:20px; background:linear-gradient(135deg,#00c6ff,#0072ff); color:#fff; font-weight:600; cursor:pointer; }
-    .video-box { flex:1; display:flex; justify-content:center; align-items:center; }
-    #jwplayer-container { width:100%; max-width:960px; aspect-ratio:16/9; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRZYB Player Seri Universal</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<style>
+body{margin:0;font-family:Arial,sans-serif;color:white;background:#000;}
+.bg-fondo{display:flex;align-items:flex-end;padding:10px;padding-top:150px;position:relative;background:none;}
+.bg-fondo::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;z-index:-1;opacity:1 !important;}
+.iframe-container{position:relative;width:100%;padding-top:56.25%;}
+.responsive-iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
+.episode-scroll-wrapper{overflow-x:auto;padding:10px 0;-webkit-overflow-scrolling:touch;}
+.episode-scroll{display:flex;gap:10px;}
+.episode-btn{flex-shrink:0;min-width:60px;text-align:center;}
+.episode-btn.active-episode{background-color:red !important;}
+.mrzyb{text-shadow:0 0 4px #000,0 0 8px #000,0 0 12px #000;}
+.modal-content{position:relative;background:#111;padding:10px;border-radius:10px;}
+.modal-close{position:absolute;top:10px;right:15px;font-size:20px;color:white;cursor:pointer;}
+</style>
 </head>
-<body>
-  <div class="container">
-    <div class="channel-buttons">
-      <button class="video-btn selected"
-        data-url="https://dreamworks.ukielaki88.workers.dev//proxy?url=https%3A%2F%2Fatemecdnbalancer-voe.sysln.id%2Flive%2Feds%2FDreamWorksHD%2Fmpd%2FDreamWorksHD.mpd"
-        data-key="f08c30b7ee114399b72e77b0c099244b:a33d496875d04510a9b3116ba51ae65d">
-        ▶ DreamWorks HD (via ExoPlayer UA)
-      </button>
+<body class="grey darken-4">
+
+<!-- HEADER: Poster + Judul -->
+<div class="row bg-fondo" id="bgFondo">
+  <div class="col s3 m4 l2">
+    <img id="poster" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAlGKrUpV0HWQsFq_WSbm9CU6OG3Pvz-92su1VM5dgq4587jCmQ9sD-mk&s=10" class="responsive-img" />
+    <span class="mrzyb poster-brand" style="position:absolute;top:8px;left:8px;">MRZYB</span>
+  </div>
+  <div class="col s9 m8 l10">
+    <h5 class="white-text mrzyb" id="title" style="margin-top:10px;">CHALKZONE</h5>
+    <div class="movie-meta">
+      <div class="chip" id="genre">School</div>
+      <div class="chip" id="rating">⭐ 10</div>
     </div>
-    <div class="video-box">
-      <div id="jwplayer-container"></div>
+    <h6>DAFTAR EPISODE</h6>
+    <div class="episode-scroll-wrapper">
+      <div class="episode-scroll" id="episode-list">
+        <!-- Tombol episode akan di-generate JS -->
+      </div>
     </div>
   </div>
+</div>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    function initializePlayer(videoUrl, videoKey) {
-      jwplayer("jwplayer-container").remove();
-      const container = $('<div id="jwplayer-container"></div>');
-      $(".video-box").append(container);
+<!-- PLAYER MODAL -->
+<div id="modal2" class="modal grey darken-4">
+  <div class="modal-content white-text">
+    <span class="modal-close" onclick="closeModal()">✖</span>
+    <div class="iframe-container">
+      <iframe allowfullscreen class="responsive-iframe" id="video-player" sandbox="allow-same-origin allow-scripts" scrolling="no"></iframe>
+    </div>
+  </div>
+</div>
 
-      jwplayer("jwplayer-container").setup({
-        file: videoUrl,
-        controls: true,
-        autostart: true,
-        stretching: "exactfit",
-        drm: {
-          clearkey: {
-            keyId: videoKey.split(":")[0],
-            key: videoKey.split(":")[1]
-          }
-        }
-      });
-    }
+<!-- INPUT GENERATE -->
+<div class="container input-section">
+  <h6>Isi Data Film / Seri</h6>
+  <input type="text" id="titleInput" placeholder="Judul Film">
+  <input type="text" id="posterInput" placeholder="URL Poster">
+  <input type="text" id="genreInput" placeholder="Genre">
+  <input type="text" id="ratingInput" placeholder="Rating">
+  <textarea id="episodesInput" placeholder="Masukkan link episode, satu per baris"></textarea>
+  <button onclick="generateSeries()">Generate Link & Load</button>
+  <div id="shareResult" style="margin-top:10px;"></div>
+</div>
 
-    $(document).ready(function () {
-      const first = $(".video-btn.selected");
-      initializePlayer(first.data("url"), first.data("key"));
+<!-- SCRIPT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const elems = document.querySelectorAll('.modal');
+  M.Modal.init(elems, {dismissible: true});
+});
 
-      $(".video-btn").on("click", function () {
-        $(".video-btn").removeClass("selected");
-        $(this).addClass("selected");
+function openModal(){
+  const modal = M.Modal.getInstance(document.getElementById('modal2'));
+  modal.open();
+}
 
-        const videoUrl = $(this).data("url");
-        const videoKey = $(this).data("key");
-        initializePlayer(videoUrl, videoKey);
-      });
+function closeModal(){
+  document.getElementById('video-player').src='';
+  const modal = M.Modal.getInstance(document.getElementById('modal2'));
+  modal.close();
+}
+
+function loadSeries(data){
+  if(data.poster) document.getElementById("poster").src=data.poster;
+  if(data.title) document.getElementById("title").innerText=data.title;
+  if(data.genre) document.getElementById("genre").innerText=data.genre;
+  if(data.rating) document.getElementById("rating").innerText="⭐ "+data.rating;
+
+  const epContainer=document.getElementById("episode-list");
+  epContainer.innerHTML="";
+  if(data.episodes && data.episodes.length>0){
+    data.episodes.forEach((ep,index)=>{
+      const btn=document.createElement("a");
+      btn.className="waves-effect blue btn episode-btn";
+      btn.innerText=ep.name||("Ep "+(index+1));
+      btn.href="#!";
+      btn.dataset.video=ep.video;
+      btn.onclick=function(){
+        document.querySelectorAll('.episode-btn').forEach(b=>b.classList.remove('active-episode'));
+        btn.classList.add('active-episode');
+        document.getElementById('video-player').src=ep.video;
+        openModal();
+      };
+      epContainer.appendChild(btn);
     });
-  </script>
+  }
+}
+
+function generateSeries(){
+  const title=document.getElementById("titleInput").value.trim();
+  const poster=document.getElementById("posterInput").value.trim();
+  const genre=document.getElementById("genreInput").value.trim();
+  const rating=document.getElementById("ratingInput").value.trim();
+  const epText=document.getElementById("episodesInput").value.trim();
+  if(!epText){alert("Masukkan setidaknya satu link episode!"); return;}
+  const epLines=epText.split("\n").map((url,i)=>({name:"Ep "+(i+1),video:url}));
+  const data={title,poster,genre,rating,episodes:epLines};
+  loadSeries(data);
+  const encoded=btoa(JSON.stringify(data));
+  const link=window.location.origin+window.location.pathname+"?data="+encoded;
+  document.getElementById("shareResult").innerHTML=`<input style="width:100%;padding:8px;color:#0f0;background:#111;border:none;border-radius:5px;" value="${link}" readonly onclick="this.select()">`;
+}
+
+// Load dari URL Base64 jika ada
+window.addEventListener("DOMContentLoaded",()=>{
+  const params=new URLSearchParams(window.location.search);
+  const encoded=params.get("data");
+  if(encoded){
+    try{
+      const decoded=atob(encoded);
+      const obj=JSON.parse(decoded);
+      loadSeries(obj);
+    }catch(e){console.error("Link tidak valid!");}
+  }
+});
+</script>
+
 </body>
 </html>
